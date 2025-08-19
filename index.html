@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Styles */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #121212;
+            color: #f0f0f0;
+            overscroll-behavior-y: none; /* Prevents pull-to-refresh */
+        }
+
+        /* Frosted Glass Effect */
+        .frosted-glass {
+            background-color: rgba(40, 40, 40, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Custom scrollbar for a more native feel */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4a4a4a;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Modal Animation */
+        .modal {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .modal.hidden {
+            opacity: 0;
+            transform: scale(1.05);
+            pointer-events: none;
+        }
+        .modal:not(.hidden) {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        /* Button active state */
+        .get-button:active, .gemini-button:active {
+            transform: scale(0.95);
+            opacity: 0.8;
+        }
+        .continue-button:active {
+            transform: scale(0.98);
+            background-color: #0066cc;
+        }
+        
+        /* Spinner for loading state */
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-left-color: #3b82f6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Active nav link style */
+        .nav-link.active {
+            color: #3b82f6; /* Tailwind's blue-500 */
+        }
+    </style>
+</head>
+<body class="overflow-hidden">
+
+    <div id="app-store-container" class="h-screen w-screen bg-[#1c1c1e] flex flex-col">
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto">
+            
+            <!-- TAB 1: TODAY -->
+            <div id="today-tab" class="tab-content p-4 md:p-6 lg:p-8">
+                <header class="mb-8">
+                    <p class="text-xs text-gray-400 uppercase font-semibold">TUESDAY, AUGUST 19</p>
+                    <h1 class="text-4xl font-bold text-white tracking-tight">Today</h1>
+                </header>
+                <section class="mb-8">
+                    <div class="bg-cover bg-center rounded-3xl h-96 p-6 flex flex-col justify-end text-white shadow-2xl" style="background-image: url('https://placehold.co/800x600/3B82F6/FFFFFF?text=Featured+App');">
+                        <h2 class="text-sm font-semibold uppercase tracking-wider">Editor's Choice</h2>
+                        <p class="text-3xl font-bold">The Ultimate Productivity App</p>
+                        <p class="text-sm max-w-xs mt-1">Transform your workflow and achieve more than ever before.</p>
+                    </div>
+                </section>
+                <section>
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-bold text-white">Don't Miss</h2>
+                        <a href="#" class="text-blue-400 font-semibold">See All</a>
+                    </div>
+                    <div class="space-y-4 app-list">
+                        <!-- App items will be dynamically handled -->
+                    </div>
+                </section>
+            </div>
+
+            <!-- TAB 2: GAMES -->
+            <div id="games-tab" class="tab-content hidden p-4 md:p-6 lg:p-8">
+                <header class="mb-8 flex justify-between items-center">
+                    <h1 class="text-4xl font-bold text-white tracking-tight">Games</h1>
+                    <div class="w-10 h-10 bg-blue-500 rounded-full"></div> <!-- Profile Icon Placeholder -->
+                </header>
+                <section class="mb-8">
+                    <div class="border-b border-gray-700 pb-4">
+                        <h2 class="text-sm font-semibold uppercase tracking-wider text-blue-400">New Game</h2>
+                        <p class="text-2xl font-bold">Galaxy Runner X</p>
+                        <p class="text-sm text-gray-400">Endless space adventure awaits.</p>
+                        <div class="bg-cover bg-center rounded-2xl h-56 mt-2" style="background-image: url('https://placehold.co/800x400/8B5CF6/FFFFFF?text=Galaxy+Runner+X');"></div>
+                    </div>
+                </section>
+                <section>
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-bold text-white">Top Charts</h2>
+                        <a href="#" class="text-blue-400 font-semibold">See All</a>
+                    </div>
+                    <div class="space-y-4 app-list">
+                        <!-- Game items will be dynamically handled -->
+                    </div>
+                </section>
+            </div>
+
+            <!-- TAB 3: APPS -->
+            <div id="apps-tab" class="tab-content hidden p-4 md:p-6 lg:p-8">
+                <header class="mb-8 flex justify-between items-center">
+                    <h1 class="text-4xl font-bold text-white tracking-tight">Apps</h1>
+                    <div class="w-10 h-10 bg-green-500 rounded-full"></div> <!-- Profile Icon Placeholder -->
+                </header>
+                 <section class="mb-8">
+                    <div class="border-b border-gray-700 pb-4">
+                        <h2 class="text-sm font-semibold uppercase tracking-wider text-blue-400">Editor's Pick</h2>
+                        <p class="text-2xl font-bold">Flowstate Editor</p>
+                        <p class="text-sm text-gray-400">Focus on your writing like never before.</p>
+                        <div class="bg-cover bg-center rounded-2xl h-56 mt-2" style="background-image: url('https://placehold.co/800x400/10B981/FFFFFF?text=Flowstate');"></div>
+                    </div>
+                </section>
+                <section>
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-bold text-white">Must-Have Apps</h2>
+                         <button id="suggestAppBtn" class="gemini-button bg-blue-600/80 text-white font-bold py-2 px-4 rounded-full transition-transform duration-150 text-sm">
+                            ✨ Suggest an App
+                        </button>
+                    </div>
+                    <div id="appList" class="space-y-4 app-list">
+                        <!-- App items will be dynamically handled -->
+                    </div>
+                </section>
+            </div>
+
+            <!-- TAB 4: ARCADE -->
+            <div id="arcade-tab" class="tab-content hidden p-4 md:p-6 lg:p-8">
+                <header class="mb-8 text-center">
+                    <h1 class="text-5xl font-extrabold text-white tracking-tight" style="background: -webkit-linear-gradient(#facc15, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Arcade</h1>
+                    <p class="text-gray-300 mt-2">Get unlimited access to 200+ ad-free games.</p>
+                    <button class="bg-white text-black font-bold py-2 px-6 rounded-full mt-4">Try It Free</button>
+                </header>
+                <section>
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-bold text-white">Latest Updates</h2>
+                        <a href="#" class="text-blue-400 font-semibold">See All</a>
+                    </div>
+                    <div class="space-y-4 app-list">
+                        <!-- Arcade game items will be dynamically handled -->
+                    </div>
+                </section>
+            </div>
+
+            <!-- TAB 5: SEARCH -->
+            <div id="search-tab" class="tab-content hidden p-4 md:p-6 lg:p-8">
+                <header class="mb-8">
+                    <h1 class="text-4xl font-bold text-white tracking-tight">Search</h1>
+                    <div class="relative mt-4">
+                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg>
+                        <input type="text" placeholder="Games, Apps, Stories, and More" class="w-full bg-gray-700/50 rounded-lg pl-10 pr-4 py-2 text-white placeholder-gray-400">
+                    </div>
+                </header>
+                <section>
+                    <h2 class="text-2xl font-bold text-white mb-4">Discover</h2>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-blue-400 bg-blue-900/50 py-1 px-3 rounded-full">Photo Editors</span>
+                        <span class="text-blue-400 bg-blue-900/50 py-1 px-3 rounded-full">Puzzle Games</span>
+                        <span class="text-blue-400 bg-blue-900/50 py-1 px-3 rounded-full">Budgeting</span>
+                        <span class="text-blue-400 bg-blue-900/50 py-1 px-3 rounded-full">Word Games</span>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="frosted-glass border-t border-gray-700/50">
+            <div id="nav-bar" class="max-w-md mx-auto flex justify-around items-center h-20 text-gray-400">
+                <a href="#" class="nav-link text-center active" data-tab="today-tab"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2H6zm1 2a1 1 0 00-1 1v1h8V5a1 1 0 00-1-1H7z" clip-rule="evenodd" /></svg><span class="text-xs font-medium">Today</span></a>
+                <a href="#" class="nav-link text-center" data-tab="games-tab"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.428A1 1 0 0010 16.57l5 1.428a1 1 0 001.17-1.408l-7-14z" /></svg><span class="text-xs">Games</span></a>
+                <a href="#" class="nav-link text-center" data-tab="apps-tab"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto" viewBox="0 0 20 20" fill="currentColor"><path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg><span class="text-xs">Apps</span></a>
+                <a href="#" class="nav-link text-center" data-tab="arcade-tab"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM6.672 7.343a1 1 0 01.223-1.094l.003-.003.004-.004a1 1 0 011.095-.223l3 1a1 1 0 01.572 1.704l-3 5a1 1 0 01-1.704-.572L6.29 8.91l-1.06 3.18a1 1 0 01-1.884-.628l2-6a1 1 0 01.326-.519z" clip-rule="evenodd" /></svg><span class="text-xs">Arcade</span></a>
+                <a href="#" class="nav-link text-center" data-tab="search-tab"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg><span class="text-xs">Search</span></a>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Modals (remain unchanged) -->
+    <div id="purchaseModal" class="modal hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="modal-overlay absolute inset-0 bg-black/50"></div>
+        <div class="frosted-glass w-full max-w-sm rounded-2xl p-6 text-center shadow-2xl relative">
+            <img id="modalAppIcon" src="" alt="App Icon" class="w-20 h-20 rounded-3xl object-cover mx-auto -mt-16 mb-4 shadow-lg border-2 border-gray-600/50">
+            <h2 id="modalAppName" class="text-2xl font-bold text-white">App Name</h2>
+            <p class="text-gray-300 text-sm mt-1">This app is free. Get it now.</p>
+            <div class="text-left text-sm text-gray-300 mt-6 border-t border-b border-gray-600/50 py-3"><div class="flex justify-between"><span>Apple ID</span><span class="text-gray-400">user@icloud.com</span></div></div>
+            <p class="text-xs text-gray-500 mt-4">Your Apple ID will be used to complete this purchase.</p>
+            <button id="continueButton" class="continue-button w-full bg-blue-600 text-white font-semibold py-3 rounded-lg mt-6 transition-colors duration-200">Continue</button>
+            <button class="cancel-button w-full text-blue-400 font-semibold py-3 rounded-lg mt-2">Cancel</button>
+        </div>
+    </div>
+    <div id="suggestionModal" class="modal hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="modal-overlay absolute inset-0 bg-black/50"></div>
+        <div class="frosted-glass w-full max-w-sm rounded-2xl p-6 text-center shadow-2xl relative">
+            <div id="suggestionInputView">
+                <h2 class="text-2xl font-bold text-white">Find Your Next App</h2>
+                <p class="text-gray-300 text-sm mt-2 mb-4">Describe what you want to do, and we'll suggest an app for it.</p>
+                <textarea id="appIdeaInput" class="w-full bg-gray-700/50 text-white rounded-lg p-3 h-24 resize-none" placeholder="e.g., 'Help me learn Spanish'"></textarea>
+                <button id="generateSuggestionBtn" class="continue-button w-full bg-blue-600 text-white font-semibold py-3 rounded-lg mt-4 transition-colors duration-200">Generate Idea</button>
+                <button class="cancel-button w-full text-blue-400 font-semibold py-3 rounded-lg mt-2">Cancel</button>
+            </div>
+            <div id="suggestionLoadingView" class="hidden flex flex-col items-center justify-center min-h-[200px]"><div class="spinner"></div><p class="text-gray-300 mt-4">Thinking of a great idea...</p></div>
+            <div id="suggestionResultView" class="hidden">
+                 <h2 class="text-xl font-bold text-white mb-2">Here's an idea!</h2>
+                 <div class="bg-gray-700/50 rounded-lg p-4 text-left">
+                    <h3 id="suggestedAppName" class="font-semibold text-lg text-white"></h3>
+                    <p id="suggestedAppDesc" class="text-sm text-gray-300 mt-1"></p>
+                 </div>
+                 <button id="addAppToListBtn" class="continue-button w-full bg-green-600 text-white font-semibold py-3 rounded-lg mt-4 transition-colors duration-200">Add to List</button>
+                 <button id="tryAgainBtn" class="w-full text-blue-400 font-semibold py-3 rounded-lg mt-2">Try Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Sample Data ---
+            const sampleApps = {
+                today: [
+                    { name: 'TaskMaster Pro', desc: 'Organize your life, finally.', icon: 'https://placehold.co/100x100/7C3AED/FFFFFF?text=Icon+1', url: 'https://www.apple.com' },
+                    { name: 'FinanceFlow', desc: 'Smart budgeting made simple.', icon: 'https://placehold.co/100x100/10B981/FFFFFF?text=Icon+2', url: 'https://www.google.com' }
+                ],
+                games: [
+                    { name: 'Asphalt 9: Legends', desc: 'Hyper-realistic racing action.', icon: 'https://placehold.co/100x100/EF4444/FFFFFF?text=A9', url: '#' },
+                    { name: 'Genshin Impact', desc: 'Explore a vast fantasy world.', icon: 'https://placehold.co/100x100/F97316/FFFFFF?text=GI', url: '#' },
+                    { name: 'Among Us', desc: 'Teamwork and betrayal.', icon: 'https://placehold.co/100x100/3B82F6/FFFFFF?text=AU', url: '#' }
+                ],
+                apps: [
+                    { name: 'Pixel Perfect', desc: 'Powerful photo editor.', icon: 'https://placehold.co/100x100/F97316/FFFFFF?text=Icon+3', url: 'https://www.microsoft.com' },
+                    { name: 'Notion', desc: 'Connected workspace for teams.', icon: 'https://placehold.co/100x100/1F2937/FFFFFF?text=N', url: '#' },
+                    { name: 'Duolingo', desc: 'Learn a language for free.', icon: 'https://placehold.co/100x100/84CC16/FFFFFF?text=D', url: '#' }
+                ],
+                arcade: [
+                    { name: 'FANTASIAN', desc: 'A new RPG from Hironobu Sakaguchi.', icon: 'https://placehold.co/100x100/EC4899/FFFFFF?text=F', url: '#' },
+                    { name: 'NBA 2K24 Arcade Edition', desc: 'Hit the court.', icon: 'https://placehold.co/100x100/0EA5E9/FFFFFF?text=NBA', url: '#' }
+                ]
+            };
+
+            // --- App Item Rendering ---
+            function createAppItemHTML(app) {
+                return `
+                    <div class="app-item flex items-center space-x-4 p-2 rounded-xl hover:bg-gray-800/50 transition-colors duration-200">
+                        <img src="${app.icon}" alt="App Icon for ${app.name}" class="w-16 h-16 rounded-2xl object-cover shadow-md">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-white app-name">${app.name}</h3>
+                            <p class="text-sm text-gray-400">${app.desc}</p>
+                        </div>
+                        <button 
+                            class="get-button bg-gray-700/80 text-white font-bold py-2 px-6 rounded-full transition-transform duration-150"
+                            data-url="${app.url}"
+                            data-name="${app.name}"
+                            data-icon="${app.icon}">
+                            GET
+                        </button>
+                    </div>
+                `;
+            }
+
+            function populateLists() {
+                document.querySelector('#today-tab .app-list').innerHTML = sampleApps.today.map(createAppItemHTML).join('');
+                document.querySelector('#games-tab .app-list').innerHTML = sampleApps.games.map(createAppItemHTML).join('');
+                document.querySelector('#apps-tab .app-list').innerHTML = sampleApps.apps.map(createAppItemHTML).join('');
+                document.querySelector('#arcade-tab .app-list').innerHTML = sampleApps.arcade.map(createAppItemHTML).join('');
+            }
+            populateLists();
+
+            // --- Tab Navigation Logic ---
+            const navLinks = document.querySelectorAll('.nav-link');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    // Update active link
+                    navLinks.forEach(nav => nav.classList.remove('active'));
+                    link.classList.add('active');
+                    
+                    // Show correct tab content
+                    const targetTab = link.dataset.tab;
+                    tabContents.forEach(tab => {
+                        if (tab.id === targetTab) {
+                            tab.classList.remove('hidden');
+                        } else {
+                            tab.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            // --- Generic Modal Logic ---
+            function setupModal(modal) {
+                const overlay = modal.querySelector('.modal-overlay');
+                const cancelButtons = modal.querySelectorAll('.cancel-button');
+                
+                const hide = () => {
+                    modal.classList.add('hidden');
+                    document.body.style.overflow = '';
+                };
+                
+                if (overlay) overlay.addEventListener('click', hide);
+                cancelButtons.forEach(btn => btn.addEventListener('click', hide));
+                
+                return { hide };
+            }
+
+            const { hide: hidePurchaseModal } = setupModal(document.getElementById('purchaseModal'));
+            const { hide: hideSuggestionModal } = setupModal(document.getElementById('suggestionModal'));
+
+            // --- Purchase Modal Logic ---
+            function setupPurchaseFlow() {
+                const purchaseModal = document.getElementById('purchaseModal');
+                const modalAppName = document.getElementById('modalAppName');
+                const modalAppIcon = document.getElementById('modalAppIcon');
+                const continueButton = document.getElementById('continueButton');
+                let redirectUrl = '';
+
+                function showPurchaseModal(name, iconSrc, url) {
+                    modalAppName.textContent = name;
+                    modalAppIcon.src = iconSrc;
+                    redirectUrl = url;
+                    purchaseModal.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                }
+
+                continueButton.addEventListener('click', () => {
+                    if (redirectUrl) window.location.href = redirectUrl;
+                    hidePurchaseModal();
+                });
+                
+                document.querySelector('main').addEventListener('click', (event) => {
+                    const button = event.target.closest('.get-button');
+                    if (button) {
+                        showPurchaseModal(button.dataset.name, button.dataset.icon, button.dataset.url);
+                    }
+                });
+            }
+            setupPurchaseFlow();
+
+            // --- Gemini Suggestion Modal Logic ---
+            function setupGeminiSuggestions() {
+                const suggestAppBtn = document.getElementById('suggestAppBtn');
+                const suggestionModal = document.getElementById('suggestionModal');
+                const appIdeaInput = document.getElementById('appIdeaInput');
+                const generateSuggestionBtn = document.getElementById('generateSuggestionBtn');
+                
+                const inputView = document.getElementById('suggestionInputView');
+                const loadingView = document.getElementById('suggestionLoadingView');
+                const resultView = document.getElementById('suggestionResultView');
+                
+                const suggestedAppNameEl = document.getElementById('suggestedAppName');
+                const suggestedAppDescEl = document.getElementById('suggestedAppDesc');
+                const addAppToListBtn = document.getElementById('addAppToListBtn');
+                const tryAgainBtn = document.getElementById('tryAgainBtn');
+                
+                let lastSuggestion = {};
+
+                suggestAppBtn.addEventListener('click', () => {
+                    inputView.classList.remove('hidden');
+                    loadingView.classList.add('hidden');
+                    resultView.classList.add('hidden');
+                    appIdeaInput.value = '';
+                    suggestionModal.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                });
+
+                generateSuggestionBtn.addEventListener('click', async () => {
+                    const userPrompt = appIdeaInput.value;
+                    if (!userPrompt.trim()) return;
+
+                    inputView.classList.add('hidden');
+                    loadingView.classList.remove('hidden');
+
+                    try {
+                        const apiKey = ""; // Leave empty
+                        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+                        const systemPrompt = `You are an App Store Genius. A user will describe a need. Invent a creative, plausible app for them. Provide a catchy name and a short, one-sentence description. Respond with ONLY a valid JSON object with two keys: "appName" and "appDescription". Example: {"appName": "Culinary Compass", "appDescription": "Discover authentic recipes from around the world."}`;
+                        const payload = {
+                            contents: [{ role: "user", parts: [{ text: `${systemPrompt}\n\nUser Need: "${userPrompt}"` }] }],
+                            generationConfig: { responseMimeType: "application/json" }
+                        };
+
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+
+                        const result = await response.json();
+                        const text = result.candidates[0].content.parts[0].text;
+                        const suggestion = JSON.parse(text);
+                        
+                        lastSuggestion = suggestion;
+                        suggestedAppNameEl.textContent = suggestion.appName;
+                        suggestedAppDescEl.textContent = suggestion.appDescription;
+
+                        loadingView.classList.add('hidden');
+                        resultView.classList.remove('hidden');
+
+                    } catch (error) {
+                        console.error("Gemini API call failed:", error);
+                        inputView.classList.remove('hidden');
+                        loadingView.classList.add('hidden');
+                        // In a real app, you'd show a user-friendly error message here.
+                    }
+                });
+                
+                tryAgainBtn.addEventListener('click', () => {
+                    resultView.classList.add('hidden');
+                    inputView.classList.remove('hidden');
+                });
+
+                addAppToListBtn.addEventListener('click', () => {
+                    if (lastSuggestion.appName) {
+                        const randomColor = Math.floor(Math.random()*16777215).toString(16);
+                        const newApp = {
+                            name: lastSuggestion.appName,
+                            desc: lastSuggestion.appDescription,
+                            icon: `https://placehold.co/100x100/${randomColor}/FFFFFF?text=${lastSuggestion.appName.charAt(0)}`,
+                            url: `https://google.com/search?q=${encodeURIComponent(lastSuggestion.appName)}`
+                        };
+                        document.querySelector('#apps-tab .app-list').insertAdjacentHTML('beforeend', createAppItemHTML(newApp));
+                        hideSuggestionModal();
+                    }
+                });
+            }
+            setupGeminiSuggestions();
+        });
+    </script>
+</body>
+</html>
